@@ -51,9 +51,9 @@
     font-weight: 500;
     
 }
-.loginsignup-login span {
+.loginsignup-login span{
     color: #ff4141;
-    font-weight: 600;
+    font-weight: 200;
     cursor: pointer;
 }
 .loginsignup-agree{
@@ -64,4 +64,7 @@
      color: #5c5c5c;
      font-size: 18px;
      font-weight: 500 ;
+}
+.btn-2{
+    color: aqua;
 }
