@@ -62,6 +62,12 @@ const LoginSignup = () => {
         setPhone('');
         setEmail('');
         setPassword('');
+
+        // After showing success message, automatically show login form after a delay
+        setTimeout(() => {
+          setIsLoginFormVisible(true); // Switch to the login form after 2 seconds
+          setSuccessMessage(''); // Hide success message
+        }, 2000);
       } else {
         // Log the full error response to help debug
         console.log('API error details:', data);
