@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate
+import { toast, ToastContainer } from 'react-toastify'; // Import toast and ToastContainer from react-toastify
+import 'react-toastify/dist/ReactToastify.css'; // Import Toastify styles
 import './CSS/loginsignup.css';
 
 const LoginSignup = () => {
@@ -12,7 +14,6 @@ const LoginSignup = () => {
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [successMessage, setSuccessMessage] = useState('');
   const [isLoginFormVisible, setIsLoginFormVisible] = useState(false); // State to toggle login form visibility
 
   // Handle sign-up submission
@@ -56,7 +57,8 @@ const LoginSignup = () => {
       const data = await response.json();
 
       if (response.ok) {
-        setSuccessMessage('Sign up successful! Please log in.');
+        // Show toast for successful sign-up
+        toast.success('Sign up successful! Please log in.');
         setError('');
         setName('');
         setPhone('');
@@ -66,7 +68,6 @@ const LoginSignup = () => {
         // After showing success message, automatically show login form after a delay
         setTimeout(() => {
           setIsLoginFormVisible(true); // Switch to the login form after 2 seconds
-          setSuccessMessage(''); // Hide success message
         }, 2000);
       } else {
         // Log the full error response to help debug
@@ -107,8 +108,17 @@ const LoginSignup = () => {
       const data = await response.json();
 
       if (response.ok) {
-        // Redirect to homepage on successful login
-        navigate('/'); // Assuming '/home' is your homepage route
+        // Show toast for successful login
+        toast.success('Successfully logged in!');
+
+        // Wait for the toast to be shown before redirecting
+        setTimeout(() => {
+          // Save the token in localStorage
+          localStorage.setItem('authToken', data.token); // Store the token in localStorage
+
+          // Redirect to homepage on successful login
+          navigate('/'); // Assuming '/home' is your homepage route
+        }, 2000); // 2-second delay to allow the toast to be visible
       } else {
         setError(data?.message || 'Invalid credentials. Please try again.');
       }
@@ -123,7 +133,6 @@ const LoginSignup = () => {
   const handleLoginToggle = () => {
     setIsLoginFormVisible(!isLoginFormVisible); // Toggle the login form visibility
     setError(''); // Clear error message when toggling forms
-    setSuccessMessage(''); // Clear success message when toggling forms
   };
 
   return (
@@ -159,7 +168,6 @@ const LoginSignup = () => {
             />
 
             {error && <p className="error-message">{error}</p>}
-            {successMessage && <p className="success-message">{successMessage}</p>}
 
             <div className="loginsignup-agree">
               <input 
@@ -222,6 +230,9 @@ const LoginSignup = () => {
           )}
         </p>
       </div>
+
+      {/* ToastContainer to display toast messages */}
+      <ToastContainer />
     </div>
   );
 };
