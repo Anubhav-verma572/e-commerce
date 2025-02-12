@@ -42,7 +42,7 @@ const Navbar = () => {
         {isLoggedIn ? (
           <button onClick={handleLogout}>Log Out</button> // Display "Log Out" button if logged in
         ) : (
-          <Link style={{ textDecoration: 'none' }} to='/login'>
+          <Link style={{ textDecoration: 'none' }} to='/signup'>
             <button>Login</button>
           </Link> // Display "Log In" button if not logged in
         )}

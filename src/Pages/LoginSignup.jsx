@@ -85,17 +85,17 @@ const LoginSignup = () => {
   // Handle login submission
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
-
+  
     const requestData = {
       account: {
         email,
         password,
       },
     };
-
+  
     setLoading(true);
     setError(''); // Clear any existing errors
-
+  
     try {
       const response = await fetch('https://postive-ayurveda-backend-dark-glitter-9173.fly.dev/accounts/sign_in', {
         method: 'POST',
@@ -104,23 +104,29 @@ const LoginSignup = () => {
         },
         body: JSON.stringify(requestData),
       });
-
-      const data = await response.json();
-
+  
+      // Check if response is OK
       if (response.ok) {
-        // Show toast for successful login
-        toast.success('Successfully logged in!');
-
-        // Wait for the toast to be shown before redirecting
-        setTimeout(() => {
-          // Save the token in localStorage
-          localStorage.setItem('authToken', data.token); // Store the token in localStorage
-
-          // Redirect to homepage on successful login
-          navigate('/'); // Assuming '/home' is your homepage route
-        }, 2000); // 2-second delay to allow the toast to be visible
+        // Extract the token from the 'Authorization' header
+        const token = response.headers.get('Authorization')?.split(' ')[1];
+  
+        if (token) {
+          toast.success('Successfully logged in!');
+  
+          // Store the token in localStorage
+          localStorage.setItem('authToken', token);
+  
+          // Wait for the toast to be shown before redirecting
+          setTimeout(() => {
+            navigate('/'); // Redirect to homepage on successful login
+          }, 2000); // 2-second delay to allow the toast to be visible
+        } else {
+          setError('Login successful, but no token received.');
+        }
       } else {
-        setError(data?.message || 'Invalid credentials. Please try again.');
+        const errorData = await response.json();
+        console.log("Error details:", errorData);
+        setError(errorData?.message || 'Invalid credentials. Please try again.');
       }
     } catch (error) {
       setError('Network error. Please try again later.');
@@ -128,6 +134,9 @@ const LoginSignup = () => {
       setLoading(false);
     }
   };
+  
+  
+  
 
   // Toggle between sign-up and login forms
   const handleLoginToggle = () => {
