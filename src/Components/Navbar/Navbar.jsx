@@ -3,6 +3,8 @@ import './Navbar.css';
 import logo from '../Assets/logo.png';
 import cart_icon from '../Assets/cart_icon.png';
 import { Link, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify'; // Correctly import ToastContainer and toast
+import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
 
 const Navbar = () => {
   const [menu, setMenu] = useState('Shop');
@@ -23,6 +25,9 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('authToken'); // Remove the token from localStorage
     setIsLoggedIn(false); // Update state to reflect logout
+    toast.success('Logout successful!', {
+      autoClose: 1000, // Set the toast to auto-close after 1 second
+    });
     navigate('/'); // Redirect to the homepage or any other route
   };
 
@@ -42,8 +47,8 @@ const Navbar = () => {
         {isLoggedIn ? (
           <button onClick={handleLogout}>Log Out</button> // Display "Log Out" button if logged in
         ) : (
-          <Link style={{ textDecoration: 'none' }} to='/signup'>
-            <button>Login</button>
+          <Link style={{ textDecoration: 'none' }} to='/login'>
+            <button>login</button>
           </Link> // Display "Log In" button if not logged in
         )}
         <Link style={{ textDecoration: 'none' }} to='/cart'>
@@ -51,6 +56,9 @@ const Navbar = () => {
         </Link>
         <div className="nav-cart-count">0</div>
       </div>
+
+      {/* Corrected ToastContainer component */}
+      <ToastContainer />
     </div>
   );
 };
