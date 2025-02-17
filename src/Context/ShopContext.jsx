@@ -34,19 +34,23 @@ const ShopContextProvider = (props) => {
     });
   };
 
-  const getTotalCartAmount= ()=>{
-    let totalAmount=0;
-    for(const item in cartItems)
-    {
-      if(cartItems[item]>0)
-      {
-        let itemInfo  = all_product.find((product)=>product.id===Number(item))
+  // Function to calculate the total cart amount
+  const getTotalCartAmount = () => {
+    let totalAmount = 0;
+    for (const item in cartItems) {
+      if (cartItems[item] > 0) {
+        const itemInfo = all_product.find((product) => product.id === Number(item));
+        if (itemInfo) {
+          totalAmount += itemInfo.new_price * cartItems[item];
+        }
       }
     }
-  }
+    return totalAmount;
+  };
 
   // Context values to be shared across the app
   const ContextValue = {
+    getTotalCartAmount,
     all_product,
     cartItems,
     addToCart,
