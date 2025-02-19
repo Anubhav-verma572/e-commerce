@@ -4,7 +4,17 @@ import { ShopContext } from '../../Context/ShopContext';
 import remove_icon from '../Assets/cart_cross_icon.png';
 
 const CartItems = () => {
-  const { all_product = [], getTotalCartAmount, cartItems, removeFromCart } = useContext(ShopContext);
+  const { all_product = [], getTotalCartAmount, cartItems, removeFromCart, updateCartItemQuantity } = useContext(ShopContext);
+
+  const handleIncreaseQuantity = (id) => {
+    updateCartItemQuantity(id, cartItems[id] + 1);
+  };
+
+  const handleDecreaseQuantity = (id) => {
+    if (cartItems[id] > 1) {
+      updateCartItemQuantity(id, cartItems[id] - 1);
+    }
+  };
 
   return (
     <div className='cartitems'>
@@ -26,7 +36,11 @@ const CartItems = () => {
                   <img src={e.image} alt={e.name} className='carticon-product-icon' />
                   <p>{e.name}</p>
                   <p>${e.new_price}</p>
-                  <button className='cartitems-quantity'>{cartItems[e.id]}</button>
+                  <div className='cartitems-quantity'>
+                    <button onClick={() => handleDecreaseQuantity(e.id)}>-</button>
+                    <p>{cartItems[e.id]}</p>
+                    <button onClick={() => handleIncreaseQuantity(e.id)}>+</button>
+                  </div>
                   <p>${e.new_price * cartItems[e.id]}</p>
                   <img className='carticon-remove-icon' src={remove_icon} onClick={() => { removeFromCart(e.id) }} alt="Remove" />
                 </div>

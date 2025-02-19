@@ -1,27 +1,37 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import all_product from "../Components/Assets/all_product";
 
 // Create a context for the Shop
 export const ShopContext = createContext(null);
 
-// Function to initialize the default cart
+// Function to initialize the default cart from LocalStorage
 const getDefaultCart = () => {
   let cart = {};
-  // Initialize cart items with 0 quantity
   all_product.forEach((product) => {
     cart[product.id] = 0;
   });
+
+  // Load cart data from localStorage if available
+  const savedCart = JSON.parse(localStorage.getItem("cartItems"));
+  if (savedCart) {
+    cart = savedCart;
+  }
+  
   return cart;
 };
 
 const ShopContextProvider = (props) => {
   const [cartItems, setCartItems] = useState(getDefaultCart());
 
+  // Store the cartItems in localStorage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("cartItems", JSON.stringify(cartItems));
+  }, [cartItems]);
+
   // Add an item to the cart
   const addToCart = (itemId) => {
     setCartItems((prev) => {
       const updatedCart = { ...prev, [itemId]: prev[itemId] + 1 };
-      console.log(updatedCart); // Log the updated cart items
       return updatedCart;
     });
   };
@@ -30,6 +40,14 @@ const ShopContextProvider = (props) => {
   const removeFromCart = (itemId) => {
     setCartItems((prev) => {
       const updatedCart = { ...prev, [itemId]: Math.max(prev[itemId] - 1, 0) }; // Prevent negative quantities
+      return updatedCart;
+    });
+  };
+
+  // Update the quantity of an item in the cart
+  const updateCartItemQuantity = (itemId, newQuantity) => {
+    setCartItems((prev) => {
+      const updatedCart = { ...prev, [itemId]: Math.max(newQuantity, 0) }; // Prevent negative quantity
       return updatedCart;
     });
   };
@@ -55,6 +73,7 @@ const ShopContextProvider = (props) => {
     cartItems,
     addToCart,
     removeFromCart,
+    updateCartItemQuantity,
   };
 
   return (

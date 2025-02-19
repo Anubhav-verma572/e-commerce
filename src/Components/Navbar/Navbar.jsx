@@ -1,15 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './Navbar.css';
 import logo from '../Assets/logo.png';
 import cart_icon from '../Assets/cart_icon.png';
 import { Link, useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify'; // Correctly import ToastContainer and toast
 import 'react-toastify/dist/ReactToastify.css'; // Import the CSS for toast notifications
+import { ShopContext } from '../../Context/ShopContext'; // Import ShopContext to access cart data
 
 const Navbar = () => {
   const [menu, setMenu] = useState('Shop');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const navigate = useNavigate();
+
+  const { cartItems } = useContext(ShopContext); // Access cartItems from the context
 
   // Check login status whenever the component re-renders
   useEffect(() => {
@@ -29,6 +32,11 @@ const Navbar = () => {
       autoClose: 1000, // Set the toast to auto-close after 1 second
     });
     navigate('/'); // Redirect to the homepage or any other route
+  };
+
+  // Calculate the total quantity of items in the cart
+  const getCartItemCount = () => {
+    return Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
   };
 
   return (
@@ -54,7 +62,7 @@ const Navbar = () => {
         <Link style={{ textDecoration: 'none' }} to='/cart'>
           <img src={cart_icon} alt="" />
         </Link>
-        <div className="nav-cart-count">0</div>
+        <div className="nav-cart-count">{getCartItemCount()}</div> {/* Display total count */}
       </div>
 
       {/* Corrected ToastContainer component */}
